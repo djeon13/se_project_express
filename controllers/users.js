@@ -3,19 +3,12 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { JWT_SECRET } = require("../utils/config");
 
-const { BAD_REQUEST, NOT_FOUND, SERVER_ERROR, CONFLICT } = require("../utils/errors");
+const {
+  BAD_REQUEST,
+  UNAUTHORIZED,
+  SERVER_ERROR,
+} = require("../utils/errors");
 
-const getUsers = (req, res) => {
-  User.find({})
-    .then((users) => res.send(users))
-    .catch((err) => {
-      console.error(err);
-
-      res.status(SERVER_ERROR).send({
-        message: "An error has occurred on the server",
-      });
-    });
-};
 
 const getCurrentUser = (req, res) => {
   User.findById(req.user._id)
@@ -91,7 +84,13 @@ const createUser = (req, res) => {
 const login = (req, res) => {
   const { email, password } = req.body;
 
-  User.findUserByCredentials(email, password)
+  if (!email || !password) {
+    return res.status(BAD_REQUEST).send({
+      message: "Email and password are required",
+    });
+  }
+
+  return User.findUserByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign(
         { _id: user._id },
@@ -99,11 +98,17 @@ const login = (req, res) => {
         { expiresIn: "7d" }
       );
 
-      res.send({ token });
+      return res.send({ token });
     })
-    .catch(() => {
-      res.status(401).send({
-        message: "Incorrect email or password",
+    .catch((err) => {
+      if (err.message === "Incorrect email or password") {
+        return res.status(UNAUTHORIZED).send({
+  message: "Incorrect email or password",
+});
+      }
+
+      return res.status(SERVER_ERROR).send({
+        message: "An error has occurred on the server",
       });
     });
 };
@@ -143,7 +148,6 @@ const updateProfile = (req, res) => {
 };
 
 module.exports = {
-  getUsers,
   getCurrentUser,
   createUser,
   login,
