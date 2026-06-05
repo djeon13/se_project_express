@@ -1,6 +1,11 @@
 const ClothingItem = require("../models/clothingItem");
 
-const { BAD_REQUEST, NOT_FOUND, SERVER_ERROR } = require("../utils/errors");
+const {
+  BAD_REQUEST,
+  FORBIDDEN,
+  NOT_FOUND,
+  SERVER_ERROR,
+} = require("../utils/errors");
 
 const getItems = (req, res) => {
   ClothingItem.find({})
@@ -40,16 +45,23 @@ const createItem = (req, res) => {
 };
 
 const deleteItem = (req, res) => {
-  ClothingItem.findByIdAndDelete(req.params.itemId)
+  ClothingItem.findById(req.params.itemId)
     .orFail()
+    .then((item) => {
+      if (item.owner.toString() !== req.user._id) {
+        return res.status(FORBIDDEN).send({
+          message: "Forbidden",
+        });
+      }
 
-    .then((item) => res.send(item))
-
+      return item.deleteOne()
+        .then(() => res.send(item));
+    })
     .catch((err) => {
-      console.error(err);
-
       if (err.name === "DocumentNotFoundError") {
-        return res.status(NOT_FOUND).send({ message: "Item not found" });
+        return res.status(NOT_FOUND).send({
+          message: "Item not found",
+        });
       }
 
       if (err.name === "CastError") {
@@ -58,9 +70,9 @@ const deleteItem = (req, res) => {
         });
       }
 
-      return res
-        .status(SERVER_ERROR)
-        .send({ message: "An error has occurred on the server" });
+      return res.status(SERVER_ERROR).send({
+        message: "An error has occurred on the server",
+      });
     });
 };
 

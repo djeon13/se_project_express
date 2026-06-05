@@ -1,45 +1,29 @@
-# WTWR (What to Wear?): Back End
+## WTWR (What to Wear?) Backend
 
-This project is the backend server for the WTWR (What to Wear?) application. The server handles API requests, stores data in MongoDB, and manages users and clothing items. The backend was built using Node.js, Express, and Mongoose.
+This project is the backend server for the WTWR (What to Wear?) application. Built with Node.js, Express, and MongoDB, it provides a RESTful API for managing users and clothing items, including creating, retrieving, deleting, and liking items.
 
-## Features
-
-- Express server configured with hot reload using Nodemon
-- MongoDB database connection using Mongoose
-- User and clothing item schemas/models
-- REST API routes for users and clothing items
-- Create, retrieve, and delete clothing items
-- Create and retrieve users
-- Like and unlike clothing items
-- Temporary authorization middleware using a test user ID
-- Error handling for invalid requests, missing resources, and server errors
-- Validation for user avatars and clothing item image URLs
-- ESLint + Prettier configuration for code consistency
-- API testing using Postman collections
+## Technologies Used
+Node.js
+Express.js
+MongoDB
+Mongoose
 
 ## API Routes
 
-### Users
+-Users
+GET /users
+GET /users/:userId
+POST /users
 
-- `GET /users` → Returns all users
-- `GET /users/:userId` → Returns a user by ID
-- `POST /users` → Creates a new user
+-Clothing Items
+GET /items
+POST /items
+DELETE /items/:itemId
+PUT /items/:itemId/likes
+DELETE /items/:itemId/likes
 
-### Clothing Items
+## Demo Video
 
-- `GET /items` → Returns all clothing items
-- `POST /items` → Creates a new clothing item
-- `DELETE /items/:itemId` → Deletes a clothing item
-- `PUT /items/:itemId/likes` → Likes a clothing item
-- `DELETE /items/:itemId/likes` → Removes a like from a clothing item
+This video shows the WTWR backend API, including creating users, managing clothing items, and liking or unliking items through the available endpoints. It also showcases the application's database interactions, request validation, and error handling using Postman.
 
-## Technologies Used
-
-- Node.js
-- Express.js
-- MongoDB
-- Mongoose
-- ESLint
-- Prettier
-- Nodemon
-- Postman
+[Watch the Demo Video](https://www.loom.com/share/3b743e42dbcc4821954cc32dd2cc6b92)
