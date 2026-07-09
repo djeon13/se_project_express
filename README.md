@@ -3,6 +3,7 @@
 This project is the backend server for the WTWR (What to Wear?) application. Built with Node.js, Express, and MongoDB, it provides a RESTful API for managing users and clothing items, including creating, retrieving, deleting, and liking items.
 
 ## Technologies Used
+
 Node.js
 Express.js
 MongoDB
